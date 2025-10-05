@@ -1,6 +1,7 @@
 "use client"
 
-import { Sparkles, Command, Settings, Keyboard, Upload, Download } from "lucide-react"
+import { Command, Settings, Keyboard, Upload, Download } from "lucide-react"
+import logo from "../public/logo.jpg"
 import { Button } from "@/components/ui/button"
 
 interface HeaderProps {
@@ -15,11 +16,15 @@ export function Header({ onCommandPalette, onSettings, onShortcuts, onImport, on
   return (
     <header className="flex h-14 items-center justify-between border-b border-border bg-card px-6">
       <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-          <Sparkles className="h-5 w-5 text-primary-foreground" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary overflow-hidden">
+          <img 
+            src={logo.src} 
+            alt="Devchum Logo" 
+            className="h-full w-full object-cover"
+          />
         </div>
         <div>
-          <h1 className="text-lg font-semibold">Baseline IDE</h1>
+          <h1 className="text-lg font-semibold">Devchum Baseline IDE</h1>
           <p className="text-xs text-muted-foreground">Real-time web compatibility checking</p>
         </div>
       </div>
@@ -44,7 +49,7 @@ export function Header({ onCommandPalette, onSettings, onShortcuts, onImport, on
         <Button variant="ghost" size="sm" onClick={onSettings} className="gap-2">
           <Settings className="h-4 w-4" />
         </Button>
-        <div className="rounded-full bg-green-500/20 px-3 py-1 text-xs font-medium text-green-500">Baseline 2024</div>
+        <div className="rounded-full bg-green-500/20 px-3 py-1 text-xs font-medium text-green-500">Baseline 2025</div>
       </div>
     </header>
   )
