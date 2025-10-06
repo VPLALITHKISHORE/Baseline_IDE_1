@@ -166,7 +166,7 @@ export function FileExplorer({
               
               {/* CTA Button */}
               <a
-                href="https://marketplace.visualstudio.com/items?itemName=BaselineHelper.baseline-guard"
+                href="https://marketplace.visualstudio.com/items?itemName=DevchumBaseline.baseline-guard-new"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
