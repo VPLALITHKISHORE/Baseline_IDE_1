@@ -11,6 +11,9 @@ import {
   Copy,
   FolderPlus,
   MoreVertical,
+  Download,
+  ExternalLink,
+  Sparkles,
 } from "lucide-react"
 import { useState } from "react"
 import type { FileNode } from "./ide-layout"
@@ -125,6 +128,7 @@ export function FileExplorer({
           </Button>
         </div>
 
+        {/* File Tree */}
         {files.map((file) => (
           <FileTreeItem
             key={file.path}
@@ -136,6 +140,54 @@ export function FileExplorer({
             depth={0}
           />
         ))}
+
+        {/* Featured Extension Banner - Below Files with extra margin */}
+        <div className="mx-2 mt-6 mb-4 relative overflow-hidden rounded-lg border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/50">
+          {/* Decorative corner accent */}
+          <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 rounded-bl-full" />
+          
+          <div className="relative space-y-3">
+            {/* Header with icon */}
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-md bg-primary/20">
+                <Sparkles className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm text-foreground">VS Code Extension</h3>
+                <p className="text-[10px] text-muted-foreground">Enhance your workflow</p>
+              </div>
+            </div>
+
+            {/* Main content */}
+            <div className="space-y-2">
+              <p className="text-xs text-foreground/90 leading-relaxed">
+                Get <span className="font-semibold text-primary">real-time compatibility checking</span> directly in your editor
+              </p>
+              
+              {/* CTA Button */}
+              <a
+                href="https://marketplace.visualstudio.com/items?itemName=BaselineHelper.baseline-guard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Download className="h-4 w-4" />
+                <span>Download Extension</span>
+                <ExternalLink className="h-3 w-3 ml-auto" />
+              </a>
+
+              {/* Features badges */}
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
+                  Free
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
+                  Instant Analysis
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Dialog open={dialogState.type !== null} onOpenChange={() => setDialogState({ type: null })}>
@@ -226,7 +278,7 @@ function FileTreeItem({ file, activeFile, onFileSelect, onOpenDialog, onFileDupl
             ) : (
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             )}
-            <Folder className="h-4 w-4 text-muted-foreground" />
+            <Folder className="h-5 w-5 text-muted-foreground" />
             <span>{file.name}</span>
           </button>
 
@@ -291,7 +343,7 @@ function FileTreeItem({ file, activeFile, onFileSelect, onOpenDialog, onFileDupl
         )}
         style={{ paddingLeft: `${depth * 12 + 32}px` }}
       >
-        <File className="h-4 w-4 text-muted-foreground" />
+        <File className="h-5 w-5 text-muted-foreground" />
         <span>{file.name}</span>
       </button>
 
@@ -325,3 +377,4 @@ function FileTreeItem({ file, activeFile, onFileSelect, onOpenDialog, onFileDupl
     </div>
   )
 }
+  

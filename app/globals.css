@@ -160,4 +160,24 @@
     font-weight: bold;
     font-size: 14px;
   }
+  /* Better text wrapping for chat messages */
+.chat-message {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Prevent code blocks from overflowing */
+.chat-message pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+}
+
+.chat-message code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 }

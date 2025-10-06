@@ -21,6 +21,8 @@ import { detectFeatures, type DetectedFeature } from "@/lib/feature-detector"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { StatusBar } from "./status-bar"
+import { FloatingChatbot } from "./floating-chatbot"
+
 
 export interface FileNode {
   name: string
@@ -589,7 +591,7 @@ export function IDELayout() {
                   <CodeQualityPanel
                     features={detectedFeatures}
                     code={activeFile.content || ""}
-                    language={activeFile.name.endsWith(".css") ? "css" : "javascript"}
+                   language={activeFile.name.endsWith(".css") ? "css" : "javascript"}
                   />
                 </TabsContent>
 
@@ -626,6 +628,9 @@ export function IDELayout() {
         onSettingsChange={setSettings}
       />
       <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+      
+      {/* Floating AI Chatbot */}
+      <FloatingChatbot />
     </div>
   )
 }
