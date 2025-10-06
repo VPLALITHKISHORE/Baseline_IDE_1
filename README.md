@@ -297,8 +297,8 @@ MIT © Baseline Guard
 ---
 
 ## 📞 Connect With Us
-- 📧 Email: hello@baselineguard.dev
-- 🌐 Website: [baselineguard.dev](https://baseline-ide-1.onrender.com/)
+- 📧 Email: arav22001.ad@rmkec.ac.in
+- 🌐 Website: [baselineguard](https://baseline-ide-1.onrender.com/)
 
 ---
 
@@ -306,6 +306,6 @@ MIT © Baseline Guard
 
 **Made with ❤️ by BroS, for developers**
 
-[Install Now](https://marketplace.visualstudio.com/items?itemName=BaselineHelper.baseline-guard) | [Documentation](https://docs.baselineguard.dev) | [Changelog](CHANGELOG.md)
+[Install Now](https://marketplace.visualstudio.com/items?itemName=DevchumBaseline.baseline-guard-new) | [Documentation](https://docs.baselineguard.dev) | [Changelog](CHANGELOG.md)
 
 </div>
