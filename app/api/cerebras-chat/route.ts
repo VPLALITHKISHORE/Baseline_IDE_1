@@ -1,15 +1,49 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const CEREBRAS_API_KEY = "csk-kr689fm3nj352frn28hmvmmdkj559dc83ytd96ff449x333k"
+const CEREBRAS_API_KEY = process.env.CEREBRAS_API_KEY
 const CEREBRAS_API_URL = "https://api.cerebras.ai/v1/chat/completions"
 const WEBSTATUS_API_URL = "https://api.webstatus.dev/v1/features"
 
+// Helper function with timeout protection
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 10000) {
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: AbortSignal.timeout(timeoutMs)
+    })
+    return response
+  } catch (error: any) {
+    if (error.name === 'TimeoutError') {
+      throw new Error(`Request timeout after ${timeoutMs}ms`)
+    }
+    throw error
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
+    // Validate API key exists
+    if (!CEREBRAS_API_KEY) {
+      console.error("CEREBRAS_API_KEY is not configured")
+      return NextResponse.json(
+        { error: "API key not configured" },
+        { status: 500 }
+      )
+    }
+
     const { message, history } = await req.json()
 
     // Fetch browser compatibility data
     const compatibilityContext = await fetchCompatibilityData(message)
+
+    // Build concise system prompt
+    let compatibilityInfo = ''
+    if (compatibilityContext && compatibilityContext.length > 0) {
+      compatibilityInfo = '\n\nRelevant browser compatibility:\n' +
+        compatibilityContext.map((f: any) => 
+          `- ${f.name}: ${f.baseline?.status || 'unknown'} support`
+        ).join('\n')
+    }
 
     // Build conversation history for context
     const messages = [
@@ -24,9 +58,7 @@ You have access to real-time browser compatibility data from WebStatus.dev. When
 4. Code examples when relevant
 5. Alternative solutions if compatibility is limited
 
-Always prioritize web standards and best practices. Be concise but thorough.
-
-${compatibilityContext ? `Current compatibility data for this query:\n${JSON.stringify(compatibilityContext, null, 2)}` : ''}`
+Always prioritize web standards and best practices. Be concise but thorough.${compatibilityInfo}`
       },
       // Add conversation history (last 5 messages for context)
       ...history.slice(-5).map((msg: any) => ({
@@ -42,22 +74,26 @@ ${compatibilityContext ? `Current compatibility data for this query:\n${JSON.str
 
     console.log("Sending request to Cerebras API...")
 
-    // Call Cerebras API
-    const response = await fetch(CEREBRAS_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${CEREBRAS_API_KEY}`
+    // Call Cerebras API with timeout protection
+    const response = await fetchWithTimeout(
+      CEREBRAS_API_URL,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${CEREBRAS_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "qwen-3-coder-480b",
+          messages: messages,
+          max_tokens: 2000,
+          temperature: 0.7,
+          top_p: 0.95,
+          stream: false
+        })
       },
-      body: JSON.stringify({
-        model: "qwen-3-coder-480b",
-        messages: messages,
-        max_tokens: 2000,
-        temperature: 0.7,
-        top_p: 0.95,
-        stream: false
-      })
-    })
+      30000 // 30 second timeout
+    )
 
     if (!response.ok) {
       const errorText = await response.text()
@@ -94,17 +130,33 @@ async function fetchCompatibilityData(query: string) {
     
     if (features.length === 0) return null
 
-    // Fetch all features from WebStatus.dev
-    const response = await fetch(WEBSTATUS_API_URL)
-    if (!response.ok) return null
+    // Fetch all features from WebStatus.dev with timeout
+    const response = await fetchWithTimeout(
+      WEBSTATUS_API_URL,
+      {
+        headers: { 'Accept': 'application/json' }
+      },
+      5000 // 5 second timeout
+    )
+    
+    if (!response.ok) {
+      console.warn('WebStatus API error:', response.status)
+      return null
+    }
 
     const data = await response.json()
+    
+    // Validate data structure
+    if (!data?.data || !Array.isArray(data.data)) {
+      console.warn('Invalid WebStatus API response')
+      return null
+    }
     
     // Find matching features
     const matchedFeatures = data.data.filter((feature: any) => 
       features.some(keyword => 
-        feature.feature_id.includes(keyword) || 
-        feature.name.toLowerCase().includes(keyword.toLowerCase())
+        feature.feature_id?.includes(keyword) || 
+        feature.name?.toLowerCase().includes(keyword.toLowerCase())
       )
     ).slice(0, 3) // Limit to 3 most relevant features
 
